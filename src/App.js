@@ -8,6 +8,11 @@ import CreateEvent from "./pages/CreateEvent"
 function App() {
   return (
     <Router>
+      <nav>
+        <Link to={"/"}> Home </Link>
+        <Link to={"/create-event"}> Create Event </Link>
+        <Link to={"/login"}> Login </Link>
+      </nav>
       <Routes>
         <Route path="" element={<Home />} />
         <Route path="/login" element={<Login />} />
