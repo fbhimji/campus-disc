@@ -1,6 +1,6 @@
 import React from 'react'
 import {useState} from 'react'
-import {createUserWithEmailAndPassword, onAuthStateChanged, signOut} from 'firebase/auth'
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut} from 'firebase/auth'
 import {auth} from "../firebase-config"
 
 function Login() {
@@ -25,11 +25,20 @@ function Login() {
     }
 
     const login = async () => {
-
+        try {
+            const user = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+            console.log(user);
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     const logout = async () => {
-        await signOut(auth);
+        signOut(auth).then(() => {
+            alert("You have successfully signed out!");
+        }).catch((error) => {
+            alert(error);
+        });
     }
 
     return(
@@ -49,7 +58,7 @@ function Login() {
                 <br></br>
                 <input placeholder="Password..." onChange={(event) => {setLoginPassword(event.target.value)}}/>
                 <br></br>
-                <button> Login</button>
+                <button onClick={login}> Login</button>
             </div>
 
             <h4> User Logged In: </h4>
