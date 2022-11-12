@@ -1,6 +1,6 @@
 import React from 'react'
 import {useState} from 'react'
-import {createUserWithEmailAndPassword} from 'firebase/auth'
+import {createUserWithEmailAndPassword, onAuthStateChanged, signOut} from 'firebase/auth'
 import {auth} from "../firebase-config"
 
 function Login() {
@@ -9,6 +9,11 @@ function Login() {
     const [registerPassword, setRegisterPassword] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+
+    const [user, setUser] = useState({});
+    onAuthStateChanged(auth, (currentUser) => {
+        setUser(currentUser);
+    });
 
     const register = async () => {
         try {
@@ -24,7 +29,7 @@ function Login() {
     }
 
     const logout = async () => {
-
+        await signOut(auth);
     }
 
     return(
@@ -48,8 +53,9 @@ function Login() {
             </div>
 
             <h4> User Logged In: </h4>
+            {user ? user.email : ""}
 
-            <button> Sign Out </button>
+            <button onClick={logout}> Sign Out</button>
         </div>
     );
 }
