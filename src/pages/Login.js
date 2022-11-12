@@ -61,9 +61,8 @@ function Login() {
                 <button onClick={login}> Login</button>
             </div>
 
-            <h4> User Logged In: </h4>
+            <h4> {user ? "Logged In As:" : "Not Logged in"} </h4>
             {user ? user.email : ""}
-
             <button onClick={logout}> Sign Out</button>
         </div>
     );
