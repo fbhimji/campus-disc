@@ -26,6 +26,23 @@ a {
   font-size: 25px;
 }
 
+u {
+  color: white;
+  text-decoration: none;
+  margin: 10px;
+  font-size: 25px;
+  position: relative;
+  top: -60px;
+  left: 77%;
+}
+
+b {
+  font-size: 25px;
+  position: relative;
+  top: -57px;
+  left: 77%;
+}
+
 .createEventPage {
   width: 100%;
   height: calc(100vh - 80px);
@@ -187,20 +204,3 @@ textarea {
   flex-direction: column;
   align-items: flex-end;
 }
-
-/* .editEvent button {
-  border: none;
-
-  background: none;
-  font-size: 30px;
-  cursor: pointer;
-}
-
-.event .eventTextContainer {
-  word-wrap: break-word;
-  height: auto;
-  max-height: 400px;
-  width: 100%;
-  overflow: hidden;
-  overflow-y: auto;
-} */

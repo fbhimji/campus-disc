@@ -1,12 +1,16 @@
 import React, {useState} from "react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, deleteDoc} from "firebase/firestore";
 import { db } from "../firebase-config";
 
 function EditEvent() {
-
+    var details = [];
     var l = [];
     l = localStorage.getItem("details");
-    const details = l.split(",");
+    if (l !== null) {
+      details = l.split(",");
+    } else {
+      window.location.pathname = "/";
+    }
 
     const [eventName, setName] = useState(details[0]);
     const [text, setText] = useState(details[1]);
@@ -24,7 +28,9 @@ function EditEvent() {
         time,
         host,
       });
-      localStorage.clear();
+      localStorage.removeItem("details");
+      const eventDoc = doc(db, "events", details[5]);
+      await deleteDoc(eventDoc);
       window.location.pathname = "/";
     };
   

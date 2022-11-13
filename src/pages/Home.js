@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getDocs, collection, deleteDoc, doc, addDoc, connectFirestoreEmulator} from "firebase/firestore";
+import { getDocs, collection, deleteDoc, doc} from "firebase/firestore";
 import { auth, db } from "../firebase-config";
 
 function Home({ isAuth }) {
+        
         const [eventsLists, setEventsList] = useState([]);
         const eventsCollectionRef = collection(db, "events");
         const details = []; 
+        
       
         useEffect(() => {
           const getEvents = async () => {
@@ -46,8 +48,7 @@ function Home({ isAuth }) {
                       {isAuth && ((event.host === auth.currentUser.email) || auth.currentUser.uid === "pFZs7C1pw1fknCOh7ULNbUlXi3U2") && (
                           <button
                           onClick={() => {
-                            details.push(event.eventName,event.text, event.location, event.time, event.host);
-                            deleteEvent(event.id);
+                            details.push(event.eventName, event.text, event.location, event.time, event.host, event.id);
                             localStorage.setItem("details", details);
                             window.location.pathname = "/edit-event";
                           }}
