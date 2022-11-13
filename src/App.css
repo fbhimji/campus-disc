@@ -26,15 +26,15 @@ a {
   font-size: 25px;
 }
 
-.createPostPage {
+.createEventPage {
   width: 100%;
   height: calc(100vh - 80px);
   display: grid;
   place-items: center;
 }
 
-.cpContainer {
-  width: 500px;
+.Container {
+  width: 30%;
   height: auto;
   padding: 20px;
   background-color: black;
@@ -42,16 +42,19 @@ a {
   color: white;
   display: flex;
   flex-direction: column;
+  position: relative;
+  top: 30px;
+  left: 0px;
 }
 
-.cpContainer h1 {
+.Container h1 {
   text-align: center;
 }
 
-.cpContainer label {
+.Container label {
   font-size: 25px;
 }
-.cpContainer .inputGp {
+.Container .inputGp {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -72,7 +75,7 @@ a {
   height: 150px;
 }
 
-.cpContainer button {
+.Container button {
   margin-top: 20px;
   height: 40px;
   border: none;
@@ -144,7 +147,7 @@ textarea {
   padding-top: 20px;
 }
 
-.homePage .post {
+.homePage .event {
   width: 600px;
   height: auto;
   max-height: 600px;
@@ -155,23 +158,37 @@ textarea {
   border-radius: 15px;
 }
 
-.post .postHeader {
+.event .eventHeader {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.postHeader .title {
+.eventHeader .title {
   flex: 50%;
 }
-.postHeader .deletePost {
+.eventHeader .deleteEvent {
   flex: 50%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-.deletePost button {
+.deleteEvent button {
+  border: none;
+
+  background: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+.eventHeader .editEvent {
+  flex: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* .editEvent button {
   border: none;
 
   background: none;
@@ -179,11 +196,11 @@ textarea {
   cursor: pointer;
 }
 
-.post .postTextContainer {
+.event .eventTextContainer {
   word-wrap: break-word;
   height: auto;
   max-height: 400px;
   width: 100%;
   overflow: hidden;
   overflow-y: auto;
-}
+} */
