@@ -9,6 +9,8 @@ function CreateEvent() {
     const [location, setLocation] = useState("");
     const [time, setTime] = useState("");
     const [host, setHost] = useState("");
+    const [compacity, setCompacity] = useState("");
+    const guestList = "";
   
     const eventsCollectionRef = collection(db, "events");
     let navigate = useNavigate();
@@ -20,6 +22,8 @@ function CreateEvent() {
         location,
         time,
         host,
+        compacity,
+        guestList,
       });
       navigate("/");
     };
@@ -70,6 +74,15 @@ function CreateEvent() {
               placeholder="Email..."
               onChange={(event) => {
                 setHost(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputGp">
+            <label> Event Compacity: </label>
+            <input
+              placeholder="Compacity..."
+              onChange={(event) => {
+                setCompacity(event.target.value);
               }}
             />
           </div>

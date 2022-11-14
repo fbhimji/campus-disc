@@ -4,8 +4,7 @@ import { db } from "../firebase-config";
 
 function EditEvent() {
     var details = [];
-    var l = [];
-    l = localStorage.getItem("details");
+    var l = localStorage.getItem("details");
     if (l !== null) {
       details = l.split(",");
     } else {
@@ -17,20 +16,30 @@ function EditEvent() {
     const [location, setLocation] = useState(details[2]);
     const [time, setTime] = useState(details[3]);
     const [host, setHost] = useState(details[4]);
+    const [compacity, setCompacity] = useState(details[5]);
+    var guestList = details[6];
+    var list = [];
   
     const eventsCollectionRef = collection(db, "events");
+
+    const deleteEvent = async (id) => {
+      const eventDoc = doc(db, "events", id);
+      await deleteDoc(eventDoc);
+  };
   
     const editEvent = async () => {
+      console.log(guestList);
       await addDoc(eventsCollectionRef, {
         eventName,
         text,
         location,
         time,
         host,
+        compacity,
+        guestList,
       });
       localStorage.removeItem("details");
-      const eventDoc = doc(db, "events", details[5]);
-      await deleteDoc(eventDoc);
+      deleteEvent(details[7]);
       window.location.pathname = "/";
     };
   
@@ -80,6 +89,32 @@ function EditEvent() {
               value = {host}
               onChange={(event) => {
                 setHost(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputGp">
+            <label> Event Compacity: </label>
+            <input
+              value = {compacity}
+              onChange={(event) => {
+                setCompacity(event.target.value);
+              }}
+            />
+          </div>
+          <div className="inputGp">
+            <label> Remove guests by email (seperate by comma) </label>
+            <input
+              placeholder="Remove guest email.."
+              onChange={(event) => {
+                list = details[6].split(",");
+                var emails = (event.target.value).split(",");
+                emails.forEach((email) => {
+                  if (list.includes(email)) {
+                    const index = list.indexOf(email);
+                    delete list[index];
+                  }
+                });
+                guestList = list.toString();
               }}
             />
           </div>
