@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { addDoc, collection, doc, deleteDoc} from "firebase/firestore";
+import { doc,updateDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 
 function EditEvent() {
@@ -18,18 +18,32 @@ function EditEvent() {
     const [host, setHost] = useState(details[4]);
     const [compacity, setCompacity] = useState(details[5]);
     var guestList = details[6];
-    var list = [];
-  
-    const eventsCollectionRef = collection(db, "events");
+    const [inviteOnly, setInviteOnly] = useState(details[7]);
+    
+    const [listInvited, setListInvited] = useState(details[8]);
 
-    const deleteEvent = async (id) => {
-      const eventDoc = doc(db, "events", id);
-      await deleteDoc(eventDoc);
-  };
+    const id = details[9]
+    var list = [];
+    const val = (listInvited.replaceAll('|', ','));
+
+    function format() {
+      console.log(listInvited);
+      updateEvent();
+    }
+
+    const m = [1, 2];
+      const task = async () => {
+        for (const item of m) {
+          await new Promise(r => setTimeout(r, 1000));
+          console.log(item);
+        }
+        localStorage.removeItem("details");
+        window.location.pathname = "/";
+      }
   
-    const editEvent = async () => {
-      console.log(guestList);
-      await addDoc(eventsCollectionRef, {
+    const updateEvent = async () => {
+      const eventDoc = doc(db, "events", id);
+      await updateDoc(eventDoc, {
         eventName,
         text,
         location,
@@ -37,11 +51,13 @@ function EditEvent() {
         host,
         compacity,
         guestList,
+        inviteOnly,
+        listInvited,
       });
-      localStorage.removeItem("details");
-      deleteEvent(details[7]);
-      window.location.pathname = "/";
+      task();
     };
+
+    
   
     return (
       <div className="createEventPage">
@@ -106,19 +122,53 @@ function EditEvent() {
             <input
               placeholder="Remove guest email.."
               onChange={(event) => {
-                list = details[6].split(",");
+                list = details[6].split("|");
                 var emails = (event.target.value).split(",");
                 emails.forEach((email) => {
                   if (list.includes(email)) {
                     const index = list.indexOf(email);
-                    delete list[index];
+                    list.splice(index, 1)
                   }
                 });
                 guestList = list.toString();
+                guestList = guestList.replaceAll(',', '|');
+                if (event.guestList.substring(0,1) === '|') {
+                  event.guestList = event.guestList.substring(1);
+                }
               }}
             />
           </div>
-          <button onClick={editEvent}> Publish Event</button>
+          <div className="inputGp">
+          <label>
+          {(inviteOnly === false) ? (<input
+              type="checkbox"
+              checked={false}
+              onChange={(event) => {
+                setInviteOnly(true);
+              }
+              }
+            />) :
+            (<input
+              type="checkbox"
+              checked={true}
+              onChange={(event) => {
+                setInviteOnly(false);
+              }
+              }
+            />)}
+           Invite Only?
+          </label>
+          </div>
+          {(inviteOnly) ? (<div className="inputGp">
+            <label> Update People Invited: (seperate by comma) </label>
+            <input
+              value = {val}
+              onChange={(event) => {
+                setListInvited((event.target.value).replaceAll(',', '|'));
+              }}
+            />
+          </div>): ""}
+          <button onClick={format}> Publish Event</button>
         </div>
       </div>
     );

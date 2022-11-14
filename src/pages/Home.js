@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDocs, collection, deleteDoc, doc, addDoc} from "firebase/firestore";
+import { getDocs, collection, deleteDoc, doc, updateDoc} from "firebase/firestore";
 import { auth, db } from "../firebase-config";
 
 function Home({ isAuth }) {
@@ -24,10 +24,9 @@ function Home({ isAuth }) {
             await deleteDoc(eventDoc);
         };
 
-        const createEvent = async () => {
-          console.log(x);
-          deleteEvent(x[7]);
-          await addDoc(eventsCollectionRef, {
+        const updateEvent = async () => {
+          const eventDoc = doc(db, "events", x[9]);
+          await updateDoc(eventDoc, {
             eventName: x[0],
             text: x[1],
             location: x[2],
@@ -35,7 +34,10 @@ function Home({ isAuth }) {
             host: x[4],
             compacity: x[5],
             guestList: x[6],
+            inviteOnly: x[7],
+            listInvited: x[8],
           });
+          x =[];
         };
 
 
@@ -43,11 +45,14 @@ function Home({ isAuth }) {
           return (
             <div className="homePage">
               {eventsLists.map((event) => {
+                if (typeof(event.guestList) !== "string") {
+                  event.guestList = "";
+                }
                 return (
                   <div className="event">
                     <div className="eventHeader">
                       <div className="deleteEvent">
-                        {isAuth && ((event.host === auth.currentUser.email) || auth.currentUser.uid === "AObFEP85hge51YBgJmYBTSZKDAU2") && (
+                        {isAuth && ((event.host === auth.currentUser.email) || auth.currentUser.email === "admin@gmail.com") && (
                           <button
                             onClick={() => {
                               deleteEvent(event.id);
@@ -59,10 +64,11 @@ function Home({ isAuth }) {
                         )}
                       </div>
                       <div className="editEvent">
-                      {isAuth && ((event.host === auth.currentUser.email) || auth.currentUser.uid === "AObFEP85hge51YBgJmYBTSZKDAU2") && ( //pFZs7C1pw1fknCOh7ULNbUlXi3U2
+                      {isAuth && ((event.host === auth.currentUser.email) || auth.currentUser.email === "admin@gmail.com") && (
                           <button
                           onClick={() => {
-                            details.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.id);
+                            console.log(event.listInvited);
+                            details.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.inviteOnly, event.listInvited, event.id);
                             localStorage.setItem("details", details);
                             window.location.pathname = "/edit-event";
                           }}
@@ -72,38 +78,35 @@ function Home({ isAuth }) {
                         )}
                       </div>
                       <div className="rsvpEvent">
-                      {isAuth && (typeof(event.guestList) !== "string" || !event.guestList.includes(auth.currentUser.email)) ? (
-                          <button
+                      {(isAuth && (event.inviteOnly === false || (event.listInvited.indexOf(auth.currentUser.email) !== -1)) && (event.guestList.includes(auth.currentUser.email))) ? ( <button
                           onClick={() => {
-                            if (typeof(event.guestList) !== "string") {
-                              event.guestList = "";
-                            }
-                            event.guestList = ((event.guestList).concat((auth.currentUser.email), ","));
-                            x.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.id);
-                            createEvent();
-                          }}
-                        >
-                          {"RSVP to Event"}
-                        </button>) : <button
-                          onClick={() => {
-                            var list = event.guestList.split(",");
+                            var list = event.guestList.split("|");
                             const email = auth.currentUser.email;
                               if (list.includes(email)) {
                                 const index = list.indexOf(email);
-                                delete list[index];
+                                list.splice(index,1);
                               }
-                            event.guestList = list.toString();
-                            x.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.id);
-                            deleteEvent(event.id);
-                            createEvent();
+                            event.guestList = (list.toString()).replaceAll(',', '|');
+                            if (event.guestList.substring(0,1) === '|') {
+                                event.guestList = event.guestList.substring(1);
+                            }
+                            x.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.inviteOnly, event.listInvited, event.id);
+                            updateEvent();
                           }}
                         >
                           {"Remove RSVP"}
-                        </button>
+                        </button>): ((isAuth && (event.inviteOnly === false || ((event.listInvited).indexOf(auth.currentUser.email) !== -1))) ? (<button
+                            onClick={() => {
+                              event.guestList = ((event.guestList).concat((auth.currentUser.email), "|"));
+                              x.push(event.eventName, event.text, event.location, event.time, event.host, event.compacity, event.guestList, event.inviteOnly, event.listInvited, event.id);
+                              updateEvent();
+                            }}
+                            >
+                            {"RSVP to Event"}
+                            </button>) : "")
                         }
                       </div>
                     </div>
-                    <container>
                     <div className="title">
                         <h1> Name: {event.eventName}</h1>
                     </div>
@@ -117,9 +120,8 @@ function Home({ isAuth }) {
                       </div>
                     </div>
                     <h3>Host: {event.host}</h3>
-                    <h3>Event Compacity:  / {event.compacity}</h3>
+                    <h3>Event Compacity: {((event.guestList.match(/@/g) || []).length)}  / {event.compacity}</h3>
                     <h3>Event List: {event.guestList}</h3>
-                    </container>
                   </div>
                 );
               })}

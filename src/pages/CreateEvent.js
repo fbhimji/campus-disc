@@ -11,6 +11,10 @@ function CreateEvent() {
     const [host, setHost] = useState("");
     const [compacity, setCompacity] = useState("");
     const guestList = "";
+    const [inviteOnly, setInviteOnly] = useState(false);
+    //const [checked, setChecked] = useState(false);
+
+    var listInvited = [];
   
     const eventsCollectionRef = collection(db, "events");
     let navigate = useNavigate();
@@ -24,6 +28,8 @@ function CreateEvent() {
         host,
         compacity,
         guestList,
+        inviteOnly,
+        listInvited,
       });
       navigate("/");
     };
@@ -86,6 +92,30 @@ function CreateEvent() {
               }}
             />
           </div>
+          <div>
+          <label>
+            <input
+              type="checkbox"
+              checked={(inviteOnly === true)}
+              onChange={(event) =>{
+                setInviteOnly(!inviteOnly);
+              }
+              }
+            />
+           Invite Only?
+          </label>
+          </div>
+          {(inviteOnly === true) ? (<div className="inputGp">
+            <label> People Invited: (seperate by comma) </label>
+            <input
+              placeholder="list of people..."
+              onChange={(event) => {
+                listInvited = (event.target.value).split(",");
+                listInvited = listInvited.toString();
+                listInvited = listInvited.replaceAll(',', '|');
+              }}
+            />
+          </div>): ""}
           <button onClick={createEvent}> Create Event</button>
         </div>
       </div>

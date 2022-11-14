@@ -14,7 +14,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
   
   var userEmail;
-  if (auth.currentUser === null || userEmail === null) {
+  if (auth.currentUser === null ||auth.currentUser.email === null) {
     userEmail = "";
   } else {
     userEmail = auth.currentUser.email;
