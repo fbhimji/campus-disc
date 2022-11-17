@@ -8,6 +8,7 @@ import CreateEvent from "./pages/CreateEvent"
 import EditEvent from "./pages/EditEvent"
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase-config";
+import EventsRSVPD from './pages/EventsRSVPD';
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
   return (
     <Router>
       <nav>
+        <Link to = {"/event-RSVPD"}> Your Events</Link>
         <Link to={"/"}> Home </Link>
         {!isAuth ? (<Link to="/login"> Login </Link>) : (
           <>
@@ -52,6 +54,7 @@ function App() {
         <Route path="/login" element={<Login setIsAuth={setIsAuth}/>} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/edit-event" element={<EditEvent />}/>
+        <Route path="/event-RSVPD" element={<EventsRSVPD />}/>
       </Routes>
     </Router>
   );

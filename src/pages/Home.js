@@ -8,6 +8,9 @@ function Home({ isAuth }) {
         const eventsCollectionRef = collection(db, "events");
         var details = []; 
         var x = [];
+        const [filterHost, setHost] = useState("");
+        const [filterTime, setTime] = useState("");
+        const [filterLocation, setLocation] = useState("");
         
       
         useEffect(() => {
@@ -44,10 +47,52 @@ function Home({ isAuth }) {
 
           return (
             <div className="homePage">
+              <div>
+                <div className="inputer">
+                  <label> Filter by Host: </label>
+                  <input
+                    placeholder="Specific Host's Email..."
+                    onChange={(event) => {
+                      if (event.target.value == null) {
+                        setHost("");
+                      } else {
+                        setHost((event.target.value).toLowerCase());
+                      }
+                    }}
+                  />
+                </div>
+                <div className="inputer">
+                  <label> Filter by Location: </label>
+                  <input
+                    placeholder="Specific Location"
+                    onChange={(event) => {
+                      if (event.target.value == null) {
+                        setLocation("");
+                      } else {
+                        setLocation((event.target.value).toLowerCase());
+                      }
+                    }}
+                  />
+                </div>
+                <div className="inputer">
+                  <label> Filter by Time: </label>
+                  <input
+                    placeholder="Specific Time.."
+                    onChange={(event) => {
+                      if (event.target.value == null) {
+                        setTime("");
+                      } else {
+                        setTime((event.target.value).toLowerCase());
+                      }
+                    }}
+                  />
+                </div>
+              </div>
               {eventsLists.map((event) => {
                 if (typeof(event.guestList) !== "string") {
                   event.guestList = "";
                 }
+                if ((filterHost === "" || (event.host).toLowerCase() === filterHost) && (filterTime === "" || event.time === filterTime) && (filterLocation === "" || (event.location).toLowerCase() === filterLocation)) {
                 return (
                   <div className="event">
                     <div className="eventHeader">
@@ -121,9 +166,10 @@ function Home({ isAuth }) {
                     </div>
                     <h3>Host: {event.host}</h3>
                     <h3>Event Compacity: {((event.guestList.match(/@/g) || []).length)}  / {event.compacity}</h3>
-                    <h3>Event List: {event.guestList}</h3>
+                    <h3>Event Attendants List: {event.guestList}</h3>
                   </div>
                 );
+            }
               })}
             </div>
           );

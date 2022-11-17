@@ -88,6 +88,11 @@ b {
 .inputGp input {
   height: 40px;
 }
+
+.inputer input {
+  height: 40px;
+  background-color: whitesmoke;
+}
 .inputGp textarea {
   height: 150px;
 }
